@@ -1,0 +1,10 @@
+<svg width="80" height="80" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+  <!-- Slash arc effect -->
+  <path d="M 10 40 Q 40 10 70 40" stroke="#C0C0C0" stroke-width="8" fill="none" opacity="0.8"/>
+  <path d="M 12 42 Q 40 14 68 42" stroke="#E0E0E0" stroke-width="6" fill="none" opacity="0.9"/>
+  <path d="M 14 44 Q 40 18 66 44" stroke="#FFFFFF" stroke-width="4" fill="none" opacity="0.7"/>
+  <!-- Motion lines -->
+  <path d="M 15 35 Q 35 15 55 35" stroke="#FFFFFF" stroke-width="2" fill="none" opacity="0.5"/>
+  <path d="M 20 45 Q 40 25 60 45" stroke="#FFFFFF" stroke-width="2" fill="none" opacity="0.5"/>
+  <path d="M 25 50 Q 40 35 55 50" stroke="#FFFFFF" stroke-width="2" fill="none" opacity="0.4"/>
+</svg>

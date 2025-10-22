@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="96" height="32" viewBox="0 0 96 32">
+  <defs>
+    <linearGradient id="metal" x1="0" x2="1">
+      <stop offset="0%"  stop-color="#9aa3ad"/>
+      <stop offset="45%" stop-color="#d5dbe1"/>
+      <stop offset="55%" stop-color="#b7c0c8"/>
+      <stop offset="100%" stop-color="#7f8994"/>
+    </linearGradient>
+    <linearGradient id="redTail" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%"  stop-color="#ffed7a"/>
+      <stop offset="35%" stop-color="#ffb03b"/>
+      <stop offset="65%" stop-color="#ff5a37"/>
+      <stop offset="100%" stop-color="#d2122e"/>
+    </linearGradient>
+  </defs>
+
+  <g opacity="0.95">
+
+    <path fill="url(#redTail)" d="M2,16 C10,7 22,6 30,8 L30,24 C22,26 10,25 2,16 Z"/>
+
+    <path fill="url(#redTail)" opacity="0.45" d="M0,16 C8,4 22,3 30,6 L30,26 C22,29 8,28 0,16 Z"/>
+    <ellipse cx="28" cy="16" rx="3.2" ry="5" fill="#ffd16b" opacity="0.85"/>
+  </g>
+
+  <rect x="28" y="8" width="48" height="16" rx="8" fill="url(#metal)" stroke="#2b2f36" stroke-width="1.5"/>
+
+  <path d="M76,8 L90,16 L76,24 Z" fill="#c9d0d6" stroke="#2b2f36" stroke-width="1.5" stroke-linejoin="round"/>
+
+  <path d="M34,11 H66" stroke="#ffffff" stroke-opacity="0.45" stroke-width="2" stroke-linecap="round"/>
+  <path d="M36,21 H64" stroke="#616a73" stroke-opacity="0.35" stroke-width="2" stroke-linecap="round"/>
+</svg>

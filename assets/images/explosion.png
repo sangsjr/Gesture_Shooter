@@ -1,0 +1,19 @@
+<svg width="160" height="160" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+  <!-- Outer explosion ring -->
+  <circle cx="80" cy="80" r="75" fill="#FF4500" opacity="0.8"/>
+  <circle cx="80" cy="80" r="65" fill="#FF6500" opacity="0.9"/>
+  <circle cx="80" cy="80" r="55" fill="#FF8500" opacity="0.9"/>
+  <!-- Inner explosion core -->
+  <circle cx="80" cy="80" r="45" fill="#FFA500" opacity="0.9"/>
+  <circle cx="80" cy="80" r="35" fill="#FFD700" opacity="0.9"/>
+  <circle cx="80" cy="80" r="25" fill="#FFFF00" opacity="0.8"/>
+  <!-- Explosion spikes -->
+  <polygon points="80,5 85,25 75,25" fill="#FF4500" opacity="0.7"/>
+  <polygon points="155,80 135,85 135,75" fill="#FF4500" opacity="0.7"/>
+  <polygon points="80,155 75,135 85,135" fill="#FF4500" opacity="0.7"/>
+  <polygon points="5,80 25,75 25,85" fill="#FF4500" opacity="0.7"/>
+  <polygon points="130,30 125,45 115,35" fill="#FF6500" opacity="0.6"/>
+  <polygon points="130,130 115,125 125,115" fill="#FF6500" opacity="0.6"/>
+  <polygon points="30,130 35,115 45,125" fill="#FF6500" opacity="0.6"/>
+  <polygon points="30,30 45,35 35,45" fill="#FF6500" opacity="0.6"/>
+</svg>

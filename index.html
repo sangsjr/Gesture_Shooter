@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gesture Shooter</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #28242c;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+        
+        #gameContainer {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        #gameCanvas {
+            border: 2px solid #333;
+            background: #111;
+        }
+        
+        #hud {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: white;
+            font-size: 16px;
+            z-index: 10;
+        }
+        
+        #health {
+            margin-bottom: 10px;
+        }
+        
+        #weaponBar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .weapon-slot {
+            padding: 5px 10px;
+            border: 2px solid #666;
+            background: rgba(0,0,0,0.7);
+            border-radius: 4px;
+        }
+        
+        .weapon-slot.active {
+            border-color: #0f0;
+            background: rgba(0,255,0,0.2);
+        }
+        
+        #gameOverScreen {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.9);
+            color: white;
+            padding: 40px;
+            border-radius: 10px;
+            text-align: center;
+            z-index: 20;
+        }
+        
+        #gameOverScreen.hidden {
+            display: none;
+        }
+        
+        #restartButton {
+            padding: 10px 20px;
+            font-size: 16px;
+            background: #333;
+            color: white;
+            border: 2px solid #666;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        
+        #restartButton:hover {
+            background: #555;
+        }
+        
+        #toast {
+            position: absolute;
+            top: 100px;
+            left: 20px;
+            background: rgba(255,255,0,0.9);
+            color: black;
+            padding: 10px 15px;
+            border-radius: 4px;
+            z-index: 15;
+            display: none;
+        }
+
+        /* Menu Button */
+        #menuButton {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 30;
+            padding: 10px 15px;
+            font-size: 16px;
+            background: rgba(50, 50, 50, 0.8);
+            color: white;
+            border: 2px solid #777;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        #menuButton:hover {
+            background: rgba(90, 90, 90, 0.9);
+        }
+
+        /*  Modal Background */
+        #menuModal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0,0,0,0.65);
+            z-index: 50;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #menuModal.hidden {
+            display: none;
+        }
+
+        /* Modal Content */
+        .menu-content {
+            width: 700px;
+            background: #222;
+            color: white;
+            border-radius: 10px;
+            padding: 30px;
+            display: flex;
+            justify-content: space-between;
+            box-shadow: 0 0 20px rgba(0,0,0,0.6);
+        }
+
+        /* Left Section */
+        .menu-left {
+            width: 55%;
+            border-right: 2px solid #444;
+            padding-right: 20px;
+        }
+        .menu-left h3 {
+            margin-top: 0;
+            color: #0f0;
+        }
+
+        /* Right Section Buttons */
+        .menu-right {
+            width: 35%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-evenly;
+            align-items: stretch;
+            padding-left: 20px;
+        }
+        .menu-btn {
+            background: #333;
+            border: 2px solid #666;
+            color: white;
+            font-size: 18px;
+            padding: 12px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+        }
+        .menu-btn:hover {
+            background: #555;
+            transform: scale(1.05);
+        }
+        .menu-btn:active {
+            background: #777;
+        }
+
+    </style>
+</head>
+<body>
+    <div id="gameContainer">
+        <canvas id="gameCanvas" width="1200" height="800"></canvas>
+        <!-- Camera Preview for Debug -->
+        <video id="gesture-cam" autoplay playsinline style="
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            width: 180px;
+            height: auto;
+            opacity: 0.4;
+            border: 2px solid #555;
+            z-index: 1000;
+            transform: scaleX(-1);
+            -webkit-transform: scaleX(-1);
+        "></video>
+        <!-- Overlay canvas for drawing gesture vector -->
+        <canvas id="gesture-overlay" style="
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            width: 180px;
+            height: 135px;
+            pointer-events: none;
+            z-index: 1001;
+            transform: scaleX(-1);
+            -webkit-transform: scaleX(-1);
+            border: none;
+        "></canvas>
+
+        <!-- Mediapipe Hands Libraries -->
+        <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
+
+        <div id="hud">
+            <div id="health">HP: <span id="healthHearts">♥♥♥</span></div>
+            <div id="weaponBar">
+                <div class="weapon-slot active" id="pistol-slot">
+                    <div>Pistol</div>
+                    <div>∞</div>
+                    <div id="pistol-haste-countdown" style="display:none; margin-top: 4px; font-size: 12px; color: #ffd700;">⚡ 10s</div>
+                </div>
+                <div class="weapon-slot" id="machinegun-slot">
+                    <div>Machine Gun</div>
+                    <div>50 placeholder</div>
+                </div>
+                <div class="weapon-slot" id="knife-slot">
+                    <div>Knife</div>
+                    <div>∞</div>
+                </div>
+                <div class="weapon-slot" id="grenade-slot">
+                    <div>Grenade</div>
+                    <div>5</div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="toast"></div>
+        
+        <div id="gameOverScreen" class="hidden">
+            <h2>Game Over</h2>
+            <p>Press Enter or click Restart to play again</p>
+            <button id="restartButton">Restart</button>
+        </div>
+    </div>
+    <!-- Game Menu Button (Top-right corner) -->
+    <button id="menuButton">☰ Menu</button>
+
+    <!-- Game Menu Modal -->
+    <div id="menuModal" class="hidden">
+        <div class="menu-content">
+            <div class="menu-left">
+                <h3>Game Instructions</h3>
+                <p>
+                    🕹️ Move with WASD or arrow keys or left hand.<br>
+                    🪖 Aim & Shoot with mouse click or right index finger.<br>
+                    💰 Pick up items with left hand pinch.<br>
+                    🔁 Switch weapons with R key or right hand pinch.<br>
+                    💡 Tip: Try to survive as long as possible!
+                </p>
+            </div>
+            <div class="menu-right">
+                <button class="menu-btn" id="btnResume">Resume</button>
+                <button class="menu-btn" id="btnRestart">Restart</button>
+                <button class="menu-btn" id="btnQuit">Quit</button>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const menuButton = document.getElementById("menuButton");
+        const menuModal = document.getElementById("menuModal");
+
+        const btnResume = document.getElementById("btnResume");
+        const btnRestart = document.getElementById("btnRestart");
+        const btnQuit = document.getElementById("btnQuit");
+
+        // Open menu and automatically pause the game
+        menuButton.addEventListener("click", () => {
+            menuModal.classList.remove("hidden");
+
+            // Pause the game if currently playing
+            if (window.game?.stateMachine?.getState() === "playing") {
+                window.game.stateMachine.setState("paused");
+                window.game.stop();
+            }
+        });
+
+        // Close menu when clicking outside modal
+        menuModal.addEventListener("click", (e) => {
+            if (e.target === menuModal) {
+                menuModal.classList.add("hidden");
+                resumeGame();
+            }
+        });
+
+        // Button actions
+        btnResume.addEventListener("click", () => {
+            menuModal.classList.add("hidden");
+            resumeGame();
+        });
+
+        btnRestart.addEventListener("click", () => {
+            menuModal.classList.add("hidden");
+            window.game?.restart?.();
+        });
+
+        btnQuit.addEventListener("click", () => {
+            alert("Thanks for playing!");
+            window.location.reload();
+        });
+
+        // Helper: resume game if paused
+        function resumeGame() {
+            if (window.game?.stateMachine?.getState() === "paused") {
+                window.game.stateMachine.setState("playing");
+                window.game.start();
+            }
+        }
+    });
+    </script>
+
+
+    
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>
