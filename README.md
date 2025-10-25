@@ -67,7 +67,7 @@ Gesture Shooter
 │  └─ sounds   ← sound effects
 └─ js/
    ├─ main.js      → game orchestration / state machine / loop / render / HUD
-   ├─ core.js      → EventBus / InputManager (Keyboard · Gesture · Voice) /
+   ├─ core.js      → EventBus / InputManager (Keyboard · Gesture) /
    │                  CollisionSystem / Utils / ImageLoader / SoundManager /
    │                  GestureInputManager
    └─ gameplay.js  → Player / Weapon (Pistol · MachineGun · Knife · Grenade) /
